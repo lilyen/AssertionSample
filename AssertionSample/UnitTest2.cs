@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using FluentAssertions;
 
 namespace AssertionSample
 {
@@ -15,12 +16,20 @@ namespace AssertionSample
         }
 
         [TestMethod]
-        public void Divide_Zero()
+        [ExpectedException(typeof(YouShallNotPassException))]
+        public void Divide_91_2()
         {
             var calculator = new Calculator();
-            var actual = calculator.Divide(5, 0);
+            var actual = calculator.Divide(5, 91);
+        }
 
-            //how to assert expected exception?
+        [TestMethod]
+        public void Divide_91()
+        {
+            var calculator = new Calculator();
+            Action action = () => { calculator.Divide(5, 91); };
+
+            action.ShouldThrow<YouShallNotPassException>();
         }
     }
 
@@ -28,7 +37,7 @@ namespace AssertionSample
     {
         public decimal Divide(decimal first, decimal second)
         {
-            if (second == 0)
+            if (second == 0 || second == 91)
             {
                 throw new YouShallNotPassException();
             }
